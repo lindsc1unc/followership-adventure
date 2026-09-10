@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Choose Your Own Followership Adventure</title>
+<style>
+:root{
+  --bg:#f6f7fb; --card:#ffffff; --text:#1f2937; --muted:#667085; --border:#d9dee8;
+  --accent:#3b5b92; --accent2:#e9eef8; --good:#edf7ef; --warn:#fff7e6;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+main{max-width:860px;margin:0 auto;padding:24px 16px 48px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:18px}
+h1,h2,h3{margin:0 0 12px}
+p{line-height:1.6}
+.kicker{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.rules{background:#f2f4f7;padding:14px;border-radius:12px;line-height:1.55}
+.grid{display:grid;gap:12px}
+.choice{display:block;width:100%;text-align:left;padding:16px;border:1px solid var(--border);background:#fff;border-radius:14px;cursor:pointer;font-size:16px}
+.choice:hover,.choice.selected{border-color:var(--accent);background:var(--accent2)}
+.choice strong{display:block;margin-bottom:5px}
+button.primary{background:var(--accent);color:white;border:0;border-radius:12px;padding:12px 18px;font-size:16px;cursor:pointer}
+button.secondary{background:white;border:1px solid var(--border);border-radius:12px;padding:11px 16px;cursor:pointer}
+select,textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;font-size:16px;background:white}
+textarea{min-height:88px;resize:vertical}
+.hidden{display:none}
+.progress{height:9px;background:#e7eaf0;border-radius:999px;overflow:hidden;margin:10px 0 18px}
+.progress>div{height:100%;background:var(--accent);width:0}
+.meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:14px}
+.outcomes{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.metric{background:#f2f4f7;border-radius:12px;padding:12px}
+.metric b{display:block;margin-top:4px}
+.path{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.pill{background:#f2f4f7;border-radius:999px;padding:8px 11px;font-size:14px}
+.driver-row{display:grid;grid-template-columns:1fr auto;gap:12px;margin:7px 0}
+.driver-bar{height:8px;background:#e9ecef;border-radius:999px;overflow:hidden}
+.driver-bar>div{height:100%;background:var(--accent)}
+@media(max-width:640px){.outcomes{grid-template-columns:1fr 1fr}.card{padding:18px}}
+</style>
+</head>
+<body>
+<main>
+<section id="intro" class="card">
+  <div class="kicker">Chapter 13 • Followership</div>
+  <h1>Choose Your Own Followership Adventure</h1>
+  <p>Your table is part of the ambulatory operations team at a large health care organization. You will make four decisions under increasing pressure. Each choice changes what happens next—and a choice can be defensible while still creating real costs.</p>
+  <div class="rules"><b>Rules:</b> Discuss each decision as a table and use one device. Aim for about <b>2 minutes per decision</b>. Once a choice is locked in, you cannot go back. There is no guaranteed “correct” route: choose what your group would genuinely do in a real organization, not what you think the presenters want.</div>
+  <form id="startForm" style="margin-top:18px">
+    <label><b>Table number</b></label>
+    <select id="tableNum" required>
+      <option value="">Select table</option>
+      <option>1</option><option>2</option><option>3</option><option>4</option>
+      <option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>
+    </select>
+    <div style="margin-top:14px"><button class="primary" type="submit">Begin the adventure →</button></div>
+  </form>
+</section>
+
+<section id="game" class="hidden">
+  <div class="meta"><span id="tableLabel"></span><span id="roundLabel"></span></div>
+  <div class="progress"><div id="progressBar"></div></div>
+  <div id="story" class="card"></div>
+</section>
+
+<section id="ending" class="hidden"></section>
+<div id="restartWrap" class="hidden"><button id="restart" class="secondary">Restart</button></div>
+</main>
+
+<script>
+const state={table:'',path:[],reasons:[],drivers:[]};
+
+const nodes={
+start:{
+ round:1,chapter:'Chapter 1 — The Rollout',title:'A Problem in the Numbers',
+ body:`Your director, <b>Elle Woods, MHA (she/her)</b>, announces a new ambulatory scheduling policy designed to reduce appointment wait times. Senior leadership wants it launched Monday because access metrics are off target. Elle is well-liked, capable, and usually open to input—but she is under visible pressure to show improvement this quarter.<br><br>You work closely with access data and notice a possible flaw: the new rules may unintentionally make it harder for <b>high-risk patients who need expedited follow-up</b> to get timely appointments. You are not yet certain the pattern is real.<br><br>Elle closes the meeting by saying, “This is a major priority. I need everyone on board.”`,
+ prompt:'What does your table do first?',
+ choices:[
+  ['Support the rollout','Help implement as directed while staying alert for problems. Elle may have information you do not.','support2'],
+  ['Question privately','Ask Elle one-on-one whether the high-risk patient concern has been considered.','private2'],
+  ['Raise it in the meeting','Put the concern on the table now so the team can consider it before launch.','challenge2'],
+  ['Verify it first','Analyze recent scheduling data before deciding whether the concern is strong enough to raise.','investigate2']
+ ]
+},
+support2:{
+ round:2,chapter:'Chapter 2 — The Reaction',title:'The Rollout Starts',
+ body:`You help implement the policy. Elle thanks you for being dependable, and the first two days appear smooth.<br><br>Then Maya, a senior scheduler, tells you two high-risk patients were delayed. “I noticed the same thing you did,” she says. “I almost brought it up before launch, but nobody else seemed worried.”`,
+ prompt:'What do you do now?',
+ choices:[
+  ['Give it more time','Tell Maya the team should monitor the issue before reacting.','support_wait3'],
+  ['Go to Elle privately','Share what Maya told you and ask for an immediate review.','support_private3'],
+  ['Ask others what they are seeing','Quietly gather more frontline information before approaching Elle.','support_gather3']
+ ]
+},
+private2:{
+ round:2,chapter:'Chapter 2 — The Reaction',title:'A Private Conversation',
+ body:`Elle listens carefully and says, “Yes, we considered that risk. Senior leadership still wants Monday. Let’s launch and monitor it closely.”<br><br>You leave the conversation unsure. Elle did not dismiss you, but also did not change the plan.`,
+ prompt:'What do you do next?',
+ choices:[
+  ['Accept the answer','Support the rollout and monitor the results.','private_accept3'],
+  ['Ask for a safeguard','Suggest a temporary exception for high-risk patients during the rollout.','private_safeguard3'],
+  ['Document your concern','Send a brief follow-up email summarizing the risk you raised and Elle’s response.','private_document3']
+ ]
+},
+challenge2:{
+ round:2,chapter:'Chapter 2 — The Reaction',title:'The Room Gets Quiet',
+ body:`You raise the concern in the team meeting. Elle looks frustrated and says the policy has already been reviewed and approved.<br><br>Afterward, three coworkers privately tell you they had the same concern. Marcus, an operations analyst, warns: “You may be right, but pushing too hard can make you look like someone who can’t get behind leadership decisions.”`,
+ prompt:'What do you do next?',
+ choices:[
+  ['Back down for now','You made the concern known. Let Elle own the decision.','challenge_back3'],
+  ['Build a coalition','Ask the coworkers who agree to raise the issue together.','challenge_coalition3'],
+  ['Request data review','Ask Elle for permission to formally test the concern with recent scheduling data.','challenge_review3']
+ ]
+},
+investigate2:{
+ round:2,chapter:'Chapter 2 — The Reaction',title:'The Data Confirms It',
+ body:`You spend several hours reviewing scheduling data. Your concern is valid. You also identify a relatively simple modification that could preserve most of Elle’s plan while protecting high-risk patients.<br><br>Nobody asked you to conduct this analysis.`,
+ prompt:'What do you do with what you found?',
+ choices:[
+  ['Go to Elle privately','Show Elle the evidence and proposed fix first.','investigate_private3'],
+  ['Bring it to the team','Present the evidence at the next team meeting.','investigate_team3'],
+  ['Ask Marcus to review it','Get a second set of eyes before deciding whether to raise it.','investigate_peer3']
+ ]
+},
+
+support_wait3:{
+ round:3,chapter:'Chapter 3 — The Stakes',title:'The Concern Is No Longer Hypothetical',
+ body:`Three days later, another high-risk patient experiences a significant delay. Dr. Patel, a physician leader, asks why the new process seems to be affecting vulnerable patients.<br><br>Elle tells you privately, “We are already fixing it. Please do not escalate this yet.”`,
+ prompt:'What does your table do?',
+ choices:[
+  ['Give Elle 48 more hours','The fix is underway; avoid creating unnecessary escalation.','wait_48_4'],
+  ['Push Elle to pause the policy','Say the patient impact now justifies immediate action.','wait_push4'],
+  ['Use the patient-safety channel','Escalate through the appropriate organizational process.','wait_escalate4']
+ ]
+},
+support_private3:{
+ round:3,chapter:'Chapter 3 — The Stakes',title:'Elle Hesitates',
+ body:`Elle thanks you for coming directly to them but says senior leadership is watching access metrics closely. “Let’s not overreact to a few cases,” Elle says.<br><br>That afternoon, Dr. Patel independently raises the same concern.`,
+ prompt:'What do you do?',
+ choices:[
+  ['Support Elle’s plan to monitor','Two concerns may still not justify stopping the rollout.','sp_monitor4'],
+  ['Ask Elle to involve Dr. Patel','Bring the clinical perspective into the decision formally.','sp_clinical4'],
+  ['Ask for a temporary pause','Recommend pausing high-risk scheduling until the data are reviewed.','sp_pause4']
+ ]
+},
+support_gather3:{
+ round:3,chapter:'Chapter 3 — The Stakes',title:'Frontline Staff Are Seeing a Pattern',
+ body:`You quietly talk with schedulers across the department. Five report the same problem. One says, “We thought leadership knew.”<br><br>You now have consistent frontline evidence, but Elle has not asked you to investigate.`,
+ prompt:'What do you do?',
+ choices:[
+  ['Bring the pattern to Elle privately','Give Elle the information and a chance to respond.','sg_private4'],
+  ['Bring the schedulers with you','Approach Elle as a group.','sg_group4'],
+  ['Send the pattern to patient safety','Use the formal escalation route now.','sg_escalate4']
+ ]
+},
+private_accept3:{
+ round:3,chapter:'Chapter 3 — The Stakes',title:'Monitoring Produces an Answer',
+ body:`Within a week, multiple high-risk patients experience delays. Elle acknowledges the concern was real and begins modifying the process.<br><br>Senior leadership asks for a summary of what happened.`,
+ prompt:'How should the rollout be described?',
+ choices:[
+  ['Focus on the correction','Emphasize that the team identified and fixed normal implementation issues.','pa_focus4'],
+  ['Include that the risk was raised before launch','Be transparent that the concern was discussed in advance.','pa_disclose4'],
+  ['Let Elle decide the wording','Elle owns the department and the report.','pa_defer4']
+ ]
+},
+private_safeguard3:{
+ round:3,chapter:'Chapter 3 — The Stakes',title:'A Partial Win',
+ body:`Elle agrees to a temporary exception for high-risk patients. The broader rollout proceeds, and early data look promising.<br><br>Senior leadership praises Elle for a smooth implementation. Elle does not mention that you proposed the safeguard.`,
+ prompt:'What do you do?',
+ choices:[
+  ['Let it go','The safeguard worked; recognition is secondary.','ps_letgo4'],
+  ['Ask for acknowledgement privately','Tell Elle you would appreciate recognition for your contribution.','ps_private4'],
+  ['Mention your role when asked about the rollout','Do not confront Elle, but accurately describe your contribution if the topic comes up.','ps_truth4']
+ ]
+},
+private_document3:{
+ round:3,chapter:'Chapter 3 — The Stakes',title:'The Email Matters',
+ body:`The rollout produces several delays. During the review, Elle says the team had not identified a major risk before implementation.<br><br>You have your follow-up email documenting that you raised the issue before launch.`,
+ prompt:'What do you do with it?',
+ choices:[
+  ['Show Elle privately','Give Elle a chance to correct the record.','pd_private4'],
+  ['Provide it if senior leadership asks','Do not escalate proactively, but do not conceal it.','pd_ifasked4'],
+  ['Send it to the review team now','Correct the record immediately.','pd_send4']
+ ]
+},
+challenge_back3:{
+ round:3,chapter:'Chapter 3 — The Stakes',title:'You Spoke Up Once',
+ body:`The policy launches. Delays occur, and senior leadership begins asking questions. Elle tells the team, “No one raised a major concern before implementation.”<br><br>You did—but you chose not to pursue it after Elle rejected it.`,
+ prompt:'What do you do?',
+ choices:[
+  ['Say nothing','You raised the issue once; Elle made the decision.','cb_silent4'],
+  ['Correct Elle privately','Remind Elle that the issue was raised.','cb_private4'],
+  ['Correct the record if asked','Do not escalate now, but answer honestly if questioned.','cb_truth4']
+ ]
+},
+challenge_coalition3:{
+ round:3,chapter:'Chapter 3 — The Stakes',title:'Strength in Numbers—Or Insubordination?',
+ body:`You return with three coworkers who share the concern. Elle agrees to review the issue but later pulls you aside.<br><br>“You are talented,” Elle says, “but organizing people against a leadership decision can make you look insubordinate. I would hate for this to affect future opportunities.”`,
+ prompt:'How do you respond?',
+ choices:[
+  ['Back down','Elle heard the concern; allow the review to happen.','cc_back4'],
+  ['Keep pushing internally','Continue challenging Elle without going above them.','cc_push4'],
+  ['Escalate formally','Use the appropriate channel despite the career warning.','cc_escalate4']
+ ]
+},
+challenge_review3:{
+ round:3,chapter:'Chapter 3 — The Stakes',title:'The Data Review',
+ body:`Elle reluctantly agrees to a quick data review. The analysis confirms the high-risk patient issue and shows your concern was justified.<br><br>Elle says, “Good catch. I can fix this quietly. There is no reason senior leadership needs the whole backstory.”`,
+ prompt:'What do you do?',
+ choices:[
+  ['Agree','The problem is being fixed; avoid unnecessary scrutiny.','cr_agree4'],
+  ['Push for disclosure','Tell Elle leadership should know the risk was identified after challenge.','cr_disclose4'],
+  ['Document but do not escalate','Keep a record in case the issue resurfaces.','cr_document4']
+ ]
+},
+investigate_private3:{
+ round:3,chapter:'Chapter 3 — The Stakes',title:'Your Fix Works',
+ body:`Elle is impressed and adopts your modification. It protects high-risk patients and preserves most of the access gains.<br><br>At the next meeting, Elle presents the modification as part of their revised strategy without mentioning your contribution.`,
+ prompt:'What do you do?',
+ choices:[
+  ['Let it go','The organizational outcome matters most.','ip_letgo4'],
+  ['Address it privately','Tell Elle you were disappointed not to be acknowledged.','ip_private4'],
+  ['Correct the record publicly','Make sure others know the analysis and recommendation came from you.','ip_public4']
+ ]
+},
+investigate_team3:{
+ round:3,chapter:'Chapter 3 — The Stakes',title:'The Team Backs You',
+ body:`You present the analysis to the team. Several coworkers immediately support the modification, and Elle agrees to revise the rollout.<br><br>Afterward, Elle tells you the public presentation made them feel undermined. You later notice you were left off two meetings you normally attend.`,
+ prompt:'What do you do?',
+ choices:[
+  ['Repair the relationship','Acknowledge the impact of how you raised the issue and try to rebuild trust.','it_repair4'],
+  ['Accept the tradeoff','The patient and organizational outcome mattered more.','it_accept4'],
+  ['Raise concern about exclusion','Ask whether being removed from meetings is retaliation.','it_retaliation4']
+ ]
+},
+investigate_peer3:{
+ round:3,chapter:'Chapter 3 — The Stakes',title:'A Second Set of Eyes',
+ body:`Marcus reviews your analysis and agrees with your conclusion, but says your proposed modification may reduce some of the access gains Elle promised senior leadership.<br><br>“You are right about the risk,” Marcus says, “but Elle is under enormous pressure. There may not be a painless fix.”`,
+ prompt:'What do you do?',
+ choices:[
+  ['Bring both the risk and tradeoff to Elle','Present a balanced analysis.','ipe_balance4'],
+  ['Refine the solution first','Spend more time looking for a fix with less downside.','ipe_refine4'],
+  ['Raise the patient risk immediately','Do not wait for a perfect solution before speaking up.','ipe_raise4']
+ ]
+},
+
+wait_48_4:{round:4,chapter:'Chapter 4 — The Cost',title:'Forty-Eight Hours Later',body:`Elle makes a partial adjustment, but another delay occurs before the fix is complete. Senior leadership begins a formal review and asks what the team knew and when.`,prompt:'What do you do?',choices:[
+ ['Protect Elle’s framing','Emphasize that the team was responding to a fast-moving implementation issue.','political_survivor'],
+ ['Tell the full timeline','Explain that the risk was suspected before launch and confirmed afterward.','measured_truth_teller'],
+ ['Volunteer your own role in waiting','Acknowledge that you chose to give the process more time.','reflective_follower']
+]},
+wait_push4:{round:4,chapter:'Chapter 4 — The Cost',title:'Elle Pushes Back',body:`Elle agrees to pause the policy but says, “I need people who can stay steady under pressure. I am one of your references for the administrative fellowship.”`,prompt:'What do you do?',choices:[
+ ['Repair the relationship','Reassure Elle that you support her leadership overall.','relationship_preserver'],
+ ['Stand by the pause','Explain that supporting the mission required changing course.','courageous_partner'],
+ ['Document the comment','Record the exchange because it may be retaliation.','mission_first']
+]},
+wait_escalate4:{round:4,chapter:'Chapter 4 — The Cost',title:'Formal Escalation',body:`Patient safety pauses the rollout immediately. The review validates the concern. Elle is angry that you went around them and says trust has been damaged.`,prompt:'How do you respond?',choices:[
+ ['Defend the escalation','Say the risk justified formal action.','mission_first'],
+ ['Acknowledge the relationship cost','Stand by the decision while trying to rebuild trust.','courageous_partner'],
+ ['Distance yourself from the escalation','Emphasize that you were following procedure, not challenging Elle personally.','procedural_follower']
+]},
+sp_monitor4:{round:4,chapter:'Chapter 4 — The Cost',title:'Another Week',body:`More delays occur before Elle changes the process. Senior leadership asks why no stronger action was taken earlier.`,prompt:'What do you do?',choices:[
+ ['Let Elle answer','Elle owned the decision.','loyal_implementer'],
+ ['Explain your earlier private concern','Provide the full context if asked.','measured_truth_teller'],
+ ['Acknowledge your own decision to wait','Own your part in the delay.','reflective_follower']
+]},
+sp_clinical4:{round:4,chapter:'Chapter 4 — The Cost',title:'Clinical Pressure Changes the Conversation',body:`Dr. Patel joins the discussion and Elle agrees to modify the process. The solution works. Elle later tells you involving a physician made them feel bypassed.`,prompt:'What do you do?',choices:[
+ ['Apologize for the process','Prioritize rebuilding the relationship.','relationship_preserver'],
+ ['Explain why clinical input was necessary','Stand by the decision and the outcome.','courageous_partner'],
+ ['Let the result speak for itself','Do not revisit the conflict.','behind_scenes']
+]},
+sp_pause4:{round:4,chapter:'Chapter 4 — The Cost',title:'A Pause With Consequences',body:`Elle pauses the high-risk portion of the rollout. Patient risk decreases, but access metrics worsen and senior leadership wants to know why.`,prompt:'Who should explain the decision?',choices:[
+ ['Let Elle own it','Support Elle’s authority.','loyal_implementer'],
+ ['Offer to explain the data together','Share responsibility for the decision.','courageous_partner'],
+ ['Send your analysis directly','Make sure senior leadership sees the evidence.','independent_operator']
+]},
+sg_private4:{round:4,chapter:'Chapter 4 — The Cost',title:'Elle Feels Cornered',body:`Elle listens but asks why you spoke with so many employees before coming to them. “This feels like you were building a case against me.”`,prompt:'How do you respond?',choices:[
+ ['Apologize and refocus on the issue','Preserve the relationship while sharing the evidence.','relationship_preserver'],
+ ['Defend the information gathering','Explain that frontline voices were necessary.','courageous_partner'],
+ ['Escalate if Elle refuses to act','Give one final chance, then use formal channels.','mission_first']
+]},
+sg_group4:{round:4,chapter:'Chapter 4 — The Cost',title:'The Group Confrontation',body:`Five schedulers join you. Elle agrees to modify the rollout but later warns that organizing coworkers can look insubordinate.`,prompt:'What do you do?',choices:[
+ ['Back down after the win','The change happened; do not push further.','political_survivor'],
+ ['Address the warning directly','Say employees should be able to raise shared concerns safely.','courageous_partner'],
+ ['Report the warning','Raise concern about retaliation.','mission_first']
+]},
+sg_escalate4:{round:4,chapter:'Chapter 4 — The Cost',title:'The Formal Review',body:`Patient safety validates the pattern and pauses the rollout. Elle says you should have come to them first.`,prompt:'How do you respond?',choices:[
+ ['Acknowledge the process concern','Stand by the outcome while recognizing the relationship cost.','procedural_follower'],
+ ['Defend the escalation fully','The pattern justified immediate action.','mission_first'],
+ ['Try to rebuild trust','Explain why you acted and ask how to work better together.','courageous_partner']
+]},
+pa_focus4:{round:4,chapter:'Chapter 4 — The Cost',title:'The Report Is Accepted',body:`Senior leadership accepts the report and praises the team for quickly fixing the rollout. The deeper question of why the pre-launch concern was not acted on never surfaces.`,prompt:'How do you feel about the outcome?',choices:[
+ ['Satisfied','The organization learned enough to fix the problem.','political_survivor'],
+ ['Uneasy','The outcome is good, but the process failure remains hidden.','reflective_follower'],
+ ['Reopen the issue','Tell Elle the pre-launch concern should still be documented.','measured_truth_teller']
+]},
+pa_disclose4:{round:4,chapter:'Chapter 4 — The Cost',title:'Transparency Creates Scrutiny',body:`Senior leadership questions why Elle launched despite the earlier concern. The process is improved, but Elle says your disclosure made the department look worse than necessary.`,prompt:'What do you do?',choices:[
+ ['Stand by the disclosure','Transparency was necessary.','mission_first'],
+ ['Explain your intent','Emphasize improvement, not blame.','courageous_partner'],
+ ['Try to repair the relationship','Acknowledge the cost of the disclosure.','relationship_preserver']
+]},
+pa_defer4:{round:4,chapter:'Chapter 4 — The Cost',title:'Elle Controls the Narrative',body:`Elle describes the issue as an unexpected implementation problem. The fix remains in place and senior leadership moves on.`,prompt:'What do you do?',choices:[
+ ['Accept it','The problem is solved.','loyal_implementer'],
+ ['Keep your own documentation','Do not challenge now, but preserve the record.','procedural_follower'],
+ ['Correct the record if asked later','Stay truthful without proactively escalating.','measured_truth_teller']
+]},
+ps_letgo4:{round:4,chapter:'Chapter 4 — The Cost',title:'No Credit, Good Outcome',body:`The safeguard continues to work. Elle’s reputation improves, while your role remains invisible.`,prompt:'What matters most?',choices:[
+ ['The patient outcome','Recognition is secondary.','behind_scenes'],
+ ['The relationship','Elle now trusts you more.','relationship_preserver'],
+ ['Fair recognition','Decide you should address the credit issue after all.','quiet_corrector']
+]},
+ps_private4:{round:4,chapter:'Chapter 4 — The Cost',title:'A Difficult Conversation',body:`Elle apologizes and says the omission was not intentional. At the next meeting, Elle publicly credits your contribution.`,prompt:'How do you interpret the result?',choices:[
+ ['A healthy correction','Private challenge improved the relationship.','courageous_partner'],
+ ['Mostly a career win','The relationship and recognition improved.','relationship_preserver'],
+ ['Evidence that speaking up matters','Small challenges can shape leaders too.','quiet_corrector']
+]},
+ps_truth4:{round:4,chapter:'Chapter 4 — The Cost',title:'The Question Comes Up',body:`A senior leader asks how the safeguard was developed. You accurately explain your role. Elle later says she wishes you had let her handle the conversation.`,prompt:'What do you do?',choices:[
+ ['Stand by the truth','You answered honestly when asked.','measured_truth_teller'],
+ ['Repair the relationship','Explain you were not trying to undermine Elle.','relationship_preserver'],
+ ['Push for clearer credit norms','Use the incident to address recognition on the team.','quiet_corrector']
+]},
+pd_private4:{round:4,chapter:'Chapter 4 — The Cost',title:'Elle Has a Choice',body:`You show Elle the email. Elle agrees to correct the timeline with senior leadership but is clearly embarrassed.`,prompt:'What do you do?',choices:[
+ ['Let Elle handle the correction','You achieved accuracy without bypassing her.','quiet_corrector'],
+ ['Offer to join the conversation','Share responsibility for the correction.','courageous_partner'],
+ ['Send the email anyway','Ensure the record cannot be softened.','independent_operator']
+]},
+pd_ifasked4:{round:4,chapter:'Chapter 4 — The Cost',title:'Senior Leadership Asks',body:`During the review, you are directly asked whether the risk was raised before launch.`,prompt:'What do you say?',choices:[
+ ['Give the full answer','Explain the concern and provide the email if needed.','measured_truth_teller'],
+ ['Answer narrowly','Confirm a concern was discussed but avoid criticizing Elle.','procedural_follower'],
+ ['Defer to Elle','Let the director explain the timeline.','loyal_implementer']
+]},
+pd_send4:{round:4,chapter:'Chapter 4 — The Cost',title:'The Record Is Corrected',body:`The review team receives the email and questions Elle’s account. The process improves, but Elle says trust between you has been badly damaged.`,prompt:'What do you prioritize now?',choices:[
+ ['The mission','Accept the relationship cost.','mission_first'],
+ ['Repairing trust','Stand by the action but rebuild the relationship.','courageous_partner'],
+ ['Protecting yourself','Document the conflict and future interactions.','procedural_follower']
+]},
+cb_silent4:{round:4,chapter:'Chapter 4 — The Cost',title:'Silence Preserves the Relationship',body:`Elle’s account goes unchallenged. The organization eventually fixes the problem, but leadership never learns a concern had been raised before implementation.`,prompt:'How does your table judge this?',choices:[
+ ['Reasonable','A follower cannot be responsible for every leader decision.','loyal_implementer'],
+ ['Too passive','You should have done more after recognizing the problem.','silenced_challenger'],
+ ['Context-dependent','The power imbalance mattered.','political_survivor']
+]},
+cb_private4:{round:4,chapter:'Chapter 4 — The Cost',title:'A Private Correction',body:`Elle agrees to clarify that you had raised a concern, but asks you not to make the disagreement sound larger than it was.`,prompt:'What do you do?',choices:[
+ ['Accept that compromise','Accuracy improves without a public confrontation.','quiet_corrector'],
+ ['Insist on full detail','The review should get the complete timeline.','mission_first'],
+ ['Let Elle choose the wording','You have done your part.','loyal_implementer']
+]},
+cb_truth4:{round:4,chapter:'Chapter 4 — The Cost',title:'The Interview',body:`Senior leadership asks you directly what happened before rollout. Elle is not in the room.`,prompt:'What do you do?',choices:[
+ ['Give the complete account','Describe the concern and Elle’s response accurately.','measured_truth_teller'],
+ ['Focus on the process, not Elle','Explain what failed without personalizing blame.','procedural_follower'],
+ ['Keep the answer minimal','Avoid damaging the leader relationship unnecessarily.','political_survivor']
+]},
+cc_back4:{round:4,chapter:'Chapter 4 — The Cost',title:'The Review Happens',body:`Elle makes a modest adjustment. The problem improves but does not disappear. Your fellowship application moves forward.`,prompt:'What do you do?',choices:[
+ ['Accept the compromise','Progress and career stability matter.','political_survivor'],
+ ['Raise the remaining risk again','The issue is not fully solved.','courageous_partner'],
+ ['Wait for more evidence','Avoid escalating without stronger proof.','procedural_follower']
+]},
+cc_push4:{round:4,chapter:'Chapter 4 — The Cost',title:'Elle Finally Moves',body:`After another difficult conversation, Elle pauses the policy for high-risk patients. The immediate risk drops, but your relationship becomes tense.`,prompt:'What do you do?',choices:[
+ ['Repair the relationship','The challenge worked; now rebuild trust.','courageous_partner'],
+ ['Accept the tension','The outcome matters more.','independent_operator'],
+ ['Document the career warning','Protect yourself in case consequences follow.','procedural_follower']
+]},
+cc_escalate4:{round:4,chapter:'Chapter 4 — The Cost',title:'The Issue Goes Above Elle',body:`Senior leadership pauses the policy and launches a review. Elle is furious and says you damaged trust.`,prompt:'What do you do?',choices:[
+ ['Stand by the escalation','Patient risk justified it.','mission_first'],
+ ['Try to rebuild trust','The escalation was necessary, but the relationship still matters.','courageous_partner'],
+ ['Request protection from retaliation','The career warning now feels significant.','procedural_follower']
+]},
+cr_agree4:{round:4,chapter:'Chapter 4 — The Cost',title:'The Quiet Fix',body:`Elle changes the process and patient risk falls. Senior leadership never learns that the problem was discovered only after you challenged the rollout.`,prompt:'How do you evaluate this?',choices:[
+ ['Successful','The outcome is what matters.','behind_scenes'],
+ ['Incomplete','The organization missed a learning opportunity.','reflective_follower'],
+ ['Problematic','Leaders should disclose how the failure occurred.','measured_truth_teller']
+]},
+cr_disclose4:{round:4,chapter:'Chapter 4 — The Cost',title:'The Backstory Comes Out',body:`Elle discloses the timeline. Senior leadership improves the rollout process but questions Elle’s judgment. Elle later tells you the disclosure hurt their credibility.`,prompt:'What do you do?',choices:[
+ ['Stand by the disclosure','Organizational learning mattered.','mission_first'],
+ ['Support Elle through the fallout','Challenge and support can coexist.','courageous_partner'],
+ ['Step back','You have pushed enough.','political_survivor']
+]},
+cr_document4:{round:4,chapter:'Chapter 4 — The Cost',title:'The Record Stays Private',body:`The fix works. Months later, a similar implementation issue arises in another department and leadership asks whether your team ever faced something comparable.`,prompt:'What do you do?',choices:[
+ ['Share the documentation','Use the old case to help the organization learn.','measured_truth_teller'],
+ ['Ask Elle first','Preserve the relationship before sharing.','procedural_follower'],
+ ['Keep it private','The old issue was resolved.','political_survivor']
+]},
+ip_letgo4:{round:4,chapter:'Chapter 4 — The Cost',title:'Invisible Influence',body:`The modification becomes standard practice. Patient access improves, Elle’s reputation rises, and your contribution remains largely unknown.`,prompt:'What does your table value most?',choices:[
+ ['Impact without credit','The result is enough.','behind_scenes'],
+ ['Future recognition','You would handle credit differently next time.','reflective_follower'],
+ ['Relationship capital','Elle now trusts you with sensitive work.','relationship_preserver']
+]},
+ip_private4:{round:4,chapter:'Chapter 4 — The Cost',title:'Elle Responds',body:`Elle apologizes and explains she was focused on getting senior approval quickly. She promises to credit you next time.`,prompt:'What do you do?',choices:[
+ ['Accept the apology','The relationship becomes stronger.','courageous_partner'],
+ ['Ask for public acknowledgement now','Recognition still matters.','quiet_corrector'],
+ ['Move on but remember it','The result matters more than revisiting the issue.','behind_scenes']
+]},
+ip_public4:{round:4,chapter:'Chapter 4 — The Cost',title:'The Credit Is Corrected—Publicly',body:`Senior leaders learn the analysis was yours and praise your initiative. Elle feels embarrassed and begins excluding you from some discussions.`,prompt:'What do you do?',choices:[
+ ['Accept the tradeoff','Recognition and truth were worth it.','independent_operator'],
+ ['Try to repair trust','The public correction had relational costs.','relationship_preserver'],
+ ['Raise the exclusion concern','Ask whether this is retaliation.','mission_first']
+]},
+it_repair4:{round:4,chapter:'Chapter 4 — The Cost',title:'A Better Working Relationship',body:`You tell Elle you stand by the analysis but understand why the public approach felt undermining. Elle acknowledges she became defensive.`,prompt:'What does your table think happened?',choices:[
+ ['Mutual adjustment','Both follower and leader changed through the interaction.','courageous_partner'],
+ ['Strategic repair','You protected both the mission and relationship.','relationship_preserver'],
+ ['A necessary compromise','Neither side fully “won.”','reflective_follower']
+]},
+it_accept4:{round:4,chapter:'Chapter 4 — The Cost',title:'The Outcome Wins, the Relationship Loses',body:`The policy works better, but Elle continues excluding you from key meetings. Senior leadership notices your analysis but not the growing conflict.`,prompt:'What do you do?',choices:[
+ ['Accept it','The organizational result mattered more.','independent_operator'],
+ ['Address Elle privately','Try to repair the relationship.','courageous_partner'],
+ ['Raise the exclusion issue formally','Protect yourself and the speak-up culture.','mission_first']
+]},
+it_retaliation4:{round:4,chapter:'Chapter 4 — The Cost',title:'The Exclusion Is Reviewed',body:`HR and senior leadership review the meeting changes. Elle says the exclusions were operational, not retaliatory. You are restored to the meetings, but trust is damaged.`,prompt:'What do you prioritize?',choices:[
+ ['Repair the relationship','The formal concern is resolved.','courageous_partner'],
+ ['Maintain distance','Protect yourself while continuing to perform well.','procedural_follower'],
+ ['Push for broader speak-up protections','Use the case to improve organizational culture.','mission_first']
+]},
+ipe_balance4:{round:4,chapter:'Chapter 4 — The Cost',title:'No Painless Option',body:`Elle appreciates the balanced analysis but says senior leadership may reject any change that worsens access metrics.`,prompt:'What do you recommend?',choices:[
+ ['Accept a smaller safeguard','Reduce risk without sacrificing too much access.','pragmatic_balancer'],
+ ['Prioritize patient risk','Recommend the stronger safeguard despite the metric cost.','mission_first'],
+ ['Pilot both approaches','Create a limited test before full implementation.','evidence_builder']
+]},
+ipe_refine4:{round:4,chapter:'Chapter 4 — The Cost',title:'More Analysis, More Time',body:`You find a better solution, but it takes four more days. During that time, one high-risk patient is significantly delayed.`,prompt:'How do you evaluate your choice?',choices:[
+ ['Worth it','The stronger long-term solution justified the delay.','evidence_builder'],
+ ['Too cautious','You should have raised the risk sooner.','reflective_follower'],
+ ['Mixed','Good analysis came with a real cost.','pragmatic_balancer']
+]},
+ipe_raise4:{round:4,chapter:'Chapter 4 — The Cost',title:'You Raise the Risk Before the Fix Is Perfect',body:`Elle pauses the high-risk portion of the rollout while you and Marcus refine the solution. Access metrics suffer temporarily, but no further high-risk delays occur.`,prompt:'What do you do next?',choices:[
+ ['Help Elle explain the tradeoff','Support the leader while defending the decision.','courageous_partner'],
+ ['Let Elle own the explanation','Your role was to surface the risk.','behind_scenes'],
+ ['Present the analysis yourself','Make sure leadership understands the evidence.','independent_operator']
+]}
+};
+
+const endings={
+loyal_implementer:['Trust Preserved, Risk Delayed','You stayed aligned with the leader and protected a workable relationship. The policy was eventually corrected, but stronger follower influence came later than it could have.','Issue eventually corrected','Some avoidable delay','Strong','Protected'],
+political_survivor:['The Career-Safe Route','You protected your standing and avoided a major rupture with the leader. The organization improved, but your caution limited how quickly the underlying process failure surfaced.','Improved, with limited learning','Some avoidable risk','Strong','Protected'],
+measured_truth_teller:['The Record Gets Corrected','You avoided unnecessary escalation early, but when accuracy mattered you gave a complete account. That improved organizational learning without making conflict the goal.','Learning improved','Risk addressed','Strained but workable','Mostly neutral'],
+reflective_follower:['A Decision You Would Revisit','Your choices were reasonable in context, yet the consequences exposed limits in the path you took. You end with a clearer view of follower responsibility and timing.','Mixed; learning gained','Mixed','Functional','Neutral'],
+relationship_preserver:['The Bridge Is Rebuilt','You treated the leader relationship as an important tool for getting work done. You still influenced the outcome, but you repeatedly chose repair over winning the conflict.','Improved','Risk reduced','Repaired / strong','Positive'],
+courageous_partner:['Challenge + Support','You supported the leader and the organization while still challenging decisions when the stakes rose. The relationship took pressure, but influence flowed in both directions.','Strong improvement','Risk reduced','Strained → stronger','Neutral / positive'],
+mission_first:['Mission Over Comfort','You prioritized patient welfare, organizational purpose, and speak-up responsibility even when doing so created personal or relational costs.','Strong learning / correction','Risk reduced fastest','Strained','Uncertain'],
+procedural_follower:['Process Over Politics','You relied on documentation, role boundaries, and formal channels rather than personal influence alone. That protected fairness, although it did not eliminate relational costs.','Clear process / record','Risk addressed','Functional','Mostly protected'],
+behind_scenes:['Influence Without Credit','You changed the outcome without needing visibility or status. The organization benefited, while your contribution remained mostly behind the scenes.','Strong result','Risk reduced','Strong','Neutral'],
+quiet_corrector:['Private Course Correction','You used private challenge and relationship-based influence to correct problems without making the disagreement public.','Improved','Risk reduced','Functional / improved','Neutral / positive'],
+independent_operator:['Right on the Issue, Out of the Room','Your independent action produced a strong substantive result, but trust and access to the leader deteriorated. Being right increased influence in one sense and reduced it in another.','Strong result','Risk reduced','Poor','Uncertain'],
+silenced_challenger:['Concern Raised, Then Quiet','You recognized and voiced a concern, but the power dynamic or leader response reduced your willingness to keep influencing the decision.','Correction came late','More avoidable delay','Preserved','Neutral'],
+pragmatic_balancer:['The Tradeoff Route','You balanced competing goods—patient risk, access, feasibility, relationships, and career consequences—rather than maximizing only one.','Workable compromise','Mostly protected','Functional','Positive'],
+evidence_builder:['Data Before Action','You emphasized analysis and testing before committing to a position. That strengthened the evidence base, though waiting for stronger proof sometimes carried its own cost.','Evidence strengthened','Mixed → improved','Functional','Positive']
+};
+
+const drivers=['Patient welfare','Organizational mission','Loyalty to leader','Evidence / data','Relationship with leader','Career consequences','Coworker / team loyalty','Personal ethics'];
+
+// The theory lens is intentionally revealed only after the group has completed the story.
+// These are application cues, not diagnoses: Chapter 13 stresses that followership is shaped by context and interaction.
+const theoryNotes={
+loyal_implementer:[
+ 'Chaleff: this path resembles high support with limited challenge—features of the Implementer pattern.',
+ 'Kelley: active execution without much independent challenge can resemble aspects of the conformist pattern.',
+ 'Ethics: followership still carries responsibility for outcomes; formal authority does not remove follower agency.'
+],
+political_survivor:[
+ 'Kelley: this route resembles pragmatic followership—balancing independent judgment, engagement, and self-protection.',
+ 'Power matters: career dependence and leader control can change how realistic upward challenge feels.',
+ 'A key question is whether adaptation protects the mission or mainly protects the follower.'
+],
+measured_truth_teller:[
+ 'Kelley: independent critical thinking appears in the willingness to preserve and later clarify the record.',
+ 'Carsten and colleagues: followers can protect the organization’s mission rather than simply protect the leader.',
+ 'Ethical followership includes responsibility for the truthfulness and consequences of one’s own actions.'
+],
+reflective_follower:[
+ 'Relational perspective: there is not always one stable follower “type”; behavior can change with the situation.',
+ 'Reversing the lens asks what follower behavior caused the leader, relationship, and organization to do next.',
+ 'This ending highlights timing: waiting, challenging, and escalating can each create different consequences.'
+],
+relationship_preserver:[
+ 'Chaleff: support is not the same as passivity. Relationship repair can preserve the ability to influence later.',
+ 'The co-created view treats leading and following as an interpersonal process, not just fixed positions.',
+ 'The tension is whether relationship maintenance strengthens mission-focused influence or suppresses needed challenge.'
+],
+courageous_partner:[
+ 'Chaleff: high support plus high challenge most closely resembles the Partner pattern.',
+ 'Kelley: the path also shows active engagement and independent critical thinking.',
+ 'Co-created leadership: follower challenge changes leader behavior, and the leader’s response changes what the follower does next.'
+],
+mission_first:[
+ 'Carsten and colleagues: proactive followers may put the organization’s mission ahead of a leader’s personal preference.',
+ 'Chaleff: courageous followership includes willingness to challenge authority when necessary.',
+ 'The tradeoff is real: ethical or mission-focused action can still damage relationships or career opportunities.'
+],
+procedural_follower:[
+ 'Followership is not only personal courage; organizations create formal structures that shape how followers can influence upward.',
+ 'Reversing the lens directs attention to how documentation and escalation behavior alter leader and organizational responses.',
+ 'Process can protect fairness, but relying on procedure alone may leave relational influence underused.'
+],
+behind_scenes:[
+ 'Reversing the lens: followers can be change agents even without formal authority or public recognition.',
+ 'Carsten and colleagues emphasize that followers often “get the job done” and can support leaders while advancing the mission.',
+ 'Influence does not require being the most visible person in the room.'
+],
+quiet_corrector:[
+ 'Chaleff: challenge can coexist with support; it does not have to be public or adversarial.',
+ 'The relational perspective highlights how trust and communication shape whether influence is accepted.',
+ 'This path shows a follower influencing the leader while preserving the working relationship.'
+],
+independent_operator:[
+ 'Kelley: this path strongly reflects independent critical thinking and active engagement.',
+ 'Chaleff: high challenge with less leader support can resemble aspects of the Individualist pattern.',
+ 'Reversing the lens shows the paradox: follower behavior can improve the decision while simultaneously worsening the relationship.'
+],
+silenced_challenger:[
+ 'A follower can recognize a problem and still reduce engagement after a negative leader response.',
+ 'Power imbalance, fear of consequences, and relationship dependence can shape followership behavior.',
+ 'The dark-side question is when understandable silence becomes enabling behavior.'
+],
+pragmatic_balancer:[
+ 'Kelley’s pragmatist sits near the middle of independent thinking and engagement rather than at either extreme.',
+ 'This route highlights that follower effectiveness can depend on context, competing goals, and feasibility.',
+ 'A compromise is not automatically weak followership—but it should still be judged against mission and ethical consequences.'
+],
+evidence_builder:[
+ 'Kelley: independent critical thinking is central here, paired with active effort to investigate.',
+ 'Carsten and colleagues emphasize that followers may have knowledge leaders lack and can use it to improve decisions.',
+ 'The unresolved tension is when evidence-seeking becomes too slow for the level of risk.'
+]
+};
+
+function renderNode(key){
+ const n=nodes[key]; state.current=key;
+ document.getElementById('roundLabel').textContent=`Decision ${n.round} of 4`;
+ document.getElementById('progressBar').style.width=`${n.round*25}%`;
+ const story=document.getElementById('story');
+ story.innerHTML=`<div class="kicker">${n.chapter}</div><h2>${n.title}</h2><p>${n.body}</p><h3>${n.prompt}</h3><div id="choices" class="grid"></div><div id="reasonBox" class="hidden" style="margin-top:18px"><label><b>Why this choice? <span style="font-weight:400;color:var(--muted)">(one sentence)</span></b></label><textarea id="reason" maxlength="240" placeholder="State the main reason your table chose this route..."></textarea><label style="display:block;margin-top:12px"><b>What mattered most in this decision?</b></label><select id="driver">${drivers.map(d=>`<option>${d}</option>`).join('')}</select><div id="err" style="color:#b42318;font-size:14px;margin-top:8px"></div><button id="lock" class="primary" style="margin-top:12px">Lock in decision →</button></div>`;
+ let selected=null;
+ const list=document.getElementById('choices');
+ n.choices.forEach((c,i)=>{
+  const b=document.createElement('button'); b.type='button'; b.className='choice';
+  b.innerHTML=`<strong>${String.fromCharCode(65+i)}. ${c[0]}</strong><span>${c[1]}</span>`;
+  b.onclick=()=>{
+   [...list.children].forEach(x=>x.classList.remove('selected'));
+   b.classList.add('selected'); selected=c; document.getElementById('reasonBox').classList.remove('hidden');
+  };
+  list.appendChild(b);
+ });
+ document.getElementById('lock').onclick=()=>{
+  const reason=document.getElementById('reason').value.trim();
+  if(!selected){return}
+  if(!reason){document.getElementById('err').textContent='Add one short sentence explaining your group’s reason.';return}
+  state.path.push(selected[0]); state.reasons.push(reason); state.drivers.push(document.getElementById('driver').value);
+  if(selected[2] in endings) renderEnding(selected[2]); else renderNode(selected[2]);
+ };
+}
+
+function renderEnding(key){
+ document.getElementById('game').classList.add('hidden');
+ const e=endings[key], box=document.getElementById('ending'); box.classList.remove('hidden');
+ const counts={}; drivers.forEach(d=>counts[d]=0); state.drivers.forEach(d=>counts[d]++);
+ const driverRows=Object.entries(counts).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).map(([d,c])=>`<div class="driver-row"><span>${d}</span><b>${c}</b><div class="driver-bar" style="grid-column:1/-1"><div style="width:${c/4*100}%"></div></div></div>`).join('');
+ box.innerHTML=`<div class="card"><div class="kicker">Table ${state.table} • Final Outcome</div><h1>${e[0]}</h1><p>${e[1]}</p><div class="outcomes"><div class="metric">Organization<b>${e[2]}</b></div><div class="metric">Patients<b>${e[3]}</b></div><div class="metric">Leader relationship<b>${e[4]}</b></div><div class="metric">Career impact<b>${e[5]}</b></div></div></div>
+ <div class="card"><h3>Your journey</h3><div class="path">${state.path.map((p,i)=>`<span class="pill">${i+1}. ${p}</span>`).join('')}</div></div>
+ <div class="card"><h3>What drove your table?</h3>${driverRows}<p><b>Before the theory reveal:</b> Was this a successful ending? Would you make the same choices again? Which decision was hardest?</p></div>
+ <div class="card"><h3>Reveal the Chapter 13 lens</h3><p>First decide whether you think your ending was successful. Then reveal how your path connects to the chapter.</p><button id="revealTheory" class="primary">Reveal theory lens →</button><div id="theoryLens" class="hidden" style="margin-top:16px"><div class="rules"><b>Important:</b> This does not diagnose your group as one fixed follower type. It uses the chapter’s frameworks to interpret behaviors in this situation.</div><div id="theoryItems" style="margin-top:14px"></div></div></div>
+ <div class="card"><h3>Keep this screen open</h3><p>Be ready to report <b>one pivotal decision</b>, your ending, and whether your table considers the outcome successful. If another table reached a different ending, listen for what changed.</p></div>`;
+ const reveal=document.getElementById('revealTheory');
+ reveal.onclick=()=>{
+  document.getElementById('theoryLens').classList.remove('hidden');
+  document.getElementById('theoryItems').innerHTML=(theoryNotes[key]||[]).map((t,i)=>`<p style="margin:9px 0"><b>${i+1}.</b> ${t}</p>`).join('');
+  reveal.classList.add('hidden');
+ };
+ document.getElementById('restartWrap').classList.remove('hidden');
+}
+
+document.getElementById('startForm').onsubmit=e=>{
+ e.preventDefault(); const t=document.getElementById('tableNum').value; if(!t)return;
+ state.table=t; document.getElementById('tableLabel').textContent=`Table ${t}`;
+ document.getElementById('intro').classList.add('hidden'); document.getElementById('game').classList.remove('hidden');
+ document.getElementById('restartWrap').classList.remove('hidden'); renderNode('start');
+};
+document.getElementById('restart').onclick=()=>location.reload();
+</script>
+</body>
+</html>
