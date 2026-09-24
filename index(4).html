@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#cf3b00" />
+<title>Followership in Action | Grey Sloan Memorial Hospital</title>
+<style>
+:root{--orange:#cf3b00;--orange2:#a92f00;--cream:#f2f0e7;--paper:#fbfaf5;--ink:#343434;--muted:#696861;--line:#d9d4c8;--good:#2f6d4f;--shadow:0 14px 40px rgba(45,38,31,.10);--radius:24px}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.45}
+button,input,textarea{font:inherit} button{cursor:pointer} .shell{width:min(980px,calc(100% - 28px));margin:0 auto;padding:24px 0 56px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}.brand{font-size:.82rem;font-weight:900;letter-spacing:.11em;text-transform:uppercase;color:var(--orange)}.step{font-size:.88rem;font-weight:800;color:var(--muted)}
+.progress{height:8px;background:#ded9cd;border-radius:999px;overflow:hidden;margin-bottom:24px}.progress>span{display:block;height:100%;background:var(--orange);width:0;transition:width .35s ease}
+.card{background:var(--paper);border:1px solid rgba(52,52,52,.09);border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(24px,4vw,44px)}.eyebrow{color:var(--orange);font-weight:900;letter-spacing:.12em;text-transform:uppercase;font-size:.78rem;margin:0 0 10px}.hero h1,.screen h1{font-size:clamp(2.2rem,7vw,4.9rem);line-height:.94;letter-spacing:-.055em;margin:0 0 18px}.hero h1 span,.accent{color:var(--orange)}.lede{font-size:clamp(1.05rem,2.2vw,1.28rem);max-width:760px;color:#4e4d48}.identity{display:grid;grid-template-columns:72px 1fr;gap:16px;align-items:center;margin:28px 0;padding:18px;border:1px solid var(--line);border-radius:20px;background:#fff}.monogram{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:var(--orange);color:#fff;font-weight:950;font-size:1.35rem}.identity strong{display:block;font-size:1.1rem}.identity span{color:var(--muted)}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}.rule{padding:16px;border-radius:18px;background:#f0ede4}.rule b{display:block;color:var(--orange);font-size:1.05rem;margin-bottom:3px}.rule span{font-size:.93rem;color:var(--muted)}
+.btn{border:0;border-radius:999px;padding:14px 22px;font-weight:900;background:var(--orange);color:#fff;box-shadow:0 7px 18px rgba(207,59,0,.20)}.btn:hover{background:var(--orange2)}.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}.btn:focus-visible,.choice:focus-visible,.driver:focus-visible{outline:4px solid rgba(207,59,0,.25);outline-offset:3px}.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.screen{display:none}.screen.active{display:block;animation:rise .25s ease}@keyframes rise{from{opacity:.35;transform:translateY(7px)}to{opacity:1;transform:none}}.decision-title{font-size:clamp(1.8rem,4vw,3.2rem)!important;line-height:1.02!important;margin-bottom:12px!important}.scenario{font-size:1.04rem;color:#4d4c47;max-width:820px;margin-bottom:22px}.callout{border-left:5px solid var(--orange);background:#f2eee4;border-radius:0 16px 16px 0;padding:16px 18px;margin:18px 0;color:#494844}.choices{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:20px}.choice{position:relative;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:19px;padding:18px 18px 18px 52px;color:var(--ink);min-height:112px;transition:.18s ease}.choice:hover{transform:translateY(-2px);border-color:#b9b2a5;box-shadow:0 8px 18px rgba(50,44,36,.07)}.choice .letter{position:absolute;left:16px;top:17px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--cream);font-weight:950;color:var(--orange)}.choice b{display:block;margin-bottom:5px;font-size:1.02rem}.choice small{display:block;color:var(--muted);line-height:1.35}.choice.selected{border-color:var(--orange);background:#fff7f2}.choice.selected .letter{background:var(--orange);color:#fff}.choice.dim{opacity:.46;pointer-events:none}
+.reflection{display:none;margin-top:24px;padding-top:22px;border-top:1px solid var(--line)}.reflection.show{display:block}.reflection h2{font-size:1.15rem;margin:0 0 8px}.reflection p{color:var(--muted);margin:0 0 14px}.drivers{display:flex;flex-wrap:wrap;gap:8px}.driver{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;font-weight:750;color:#56544e}.driver.on{background:var(--ink);border-color:var(--ink);color:#fff}.reason{width:100%;margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:13px 14px;background:#fff;resize:vertical;min-height:76px;color:var(--ink)}.reason:focus{outline:3px solid rgba(207,59,0,.18);border-color:var(--orange)}.micro{font-size:.83rem;color:var(--muted);margin-top:8px}
+.consequence{display:none;margin-top:18px;padding:16px 18px;border-radius:16px;background:#f0ede4}.consequence.show{display:block}.consequence b{color:var(--orange)}
+.endingHero{text-align:center;padding-bottom:8px}.endingHero .badge{display:inline-block;border:1px solid rgba(207,59,0,.25);color:var(--orange);border-radius:999px;padding:7px 11px;font-size:.75rem;font-weight:950;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}.endingHero h1{font-size:clamp(2.4rem,7vw,5.2rem);margin-bottom:12px}.endingHero .summary{max-width:720px;margin:0 auto;font-size:1.12rem;color:#55534d}.section{margin-top:28px;padding-top:25px;border-top:1px solid var(--line)}.section h2{font-size:1.25rem;margin:0 0 13px}.path{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.pathitem{background:#f0ede4;border-radius:16px;padding:14px}.pathitem span{display:block;font-size:.73rem;color:var(--orange);font-weight:950;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}.pathitem b{font-size:.94rem}.lens{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.lensitem{border:1px solid var(--line);background:#fff;border-radius:16px;padding:15px}.lensitem b{display:block;color:var(--orange);margin-bottom:4px}.lensitem p{font-size:.9rem;color:var(--muted);margin:0}.report{background:var(--orange);color:#fff;border-radius:20px;padding:22px;margin-top:28px}.report h2{margin:0 0 8px;font-size:1.35rem}.report ol{margin:8px 0 0;padding-left:22px}.report li{margin:7px 0}.report strong{color:#fff}.disclaimer{font-size:.82rem;color:var(--muted);margin-top:15px}.restart{margin-top:18px;text-align:center}.restart button{background:none;border:0;text-decoration:underline;color:var(--muted);font-weight:700}.footer{text-align:center;color:#77736b;font-size:.8rem;margin-top:22px}
+@media(max-width:720px){.shell{width:min(100% - 18px,980px);padding-top:12px}.card{padding:22px 18px;border-radius:20px}.rules,.choices,.lens{grid-template-columns:1fr}.path{grid-template-columns:1fr 1fr}.identity{grid-template-columns:56px 1fr}.monogram{width:56px;height:56px}.choice{min-height:auto}.topbar{margin-bottom:12px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <div class="topbar"><div class="brand">Followership in Action</div><div class="step" id="stepLabel">Start</div></div>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+  <section class="card screen active hero" id="intro">
+    <p class="eyebrow">Grey Sloan Memorial Hospital</p>
+    <h1>Four decisions.<br><span>One path.</span></h1>
+    <p class="lede">A hospital-wide patient-flow initiative is under pressure to deliver results. You will decide how one administrative leader responds as the situation becomes more complicated.</p>
+    <div class="identity"><div class="monogram">MG</div><div><strong>Meredith Grey, MHA</strong><span>Director of Hospital Operations · Grey Sloan Memorial Hospital</span></div></div>
+    <div class="rules">
+      <div class="rule"><b>Discuss</b><span>Make each decision as a table.</span></div>
+      <div class="rule"><b>Commit</b><span>Once you continue, there is no going back.</span></div>
+      <div class="rule"><b>Be genuine</b><span>Choose what you would actually do—not what sounds “textbook.”</span></div>
+    </div>
+    <div class="callout"><strong>Your role:</strong> You are Meredith. Your VP is leading the initiative; you are responsible for helping implement it across inpatient units. You have influence—but you are not the final decision-maker.</div>
+    <div class="btnrow"><button class="btn" id="startBtn">Begin the scenario →</button></div>
+  </section>
+
+  <section class="card screen" id="decisionScreen">
+    <p class="eyebrow" id="decisionEyebrow"></p>
+    <h1 class="decision-title" id="decisionTitle"></h1>
+    <div class="scenario" id="decisionScenario"></div>
+    <div class="choices" id="choices"></div>
+    <div class="consequence" id="consequence"></div>
+    <div class="reflection" id="reflection">
+      <h2>What mattered most in that choice?</h2>
+      <p>Pick the one factor that best captures your table's reasoning.</p>
+      <div class="drivers" id="drivers"></div>
+      <textarea class="reason" id="reason" maxlength="180" placeholder="Optional: one sentence about why your table chose this path..."></textarea>
+      <div class="micro"><span id="charCount">0</span>/180 · Keep it brief—you may use this in the debrief.</div>
+      <div class="btnrow"><button class="btn" id="continueBtn" disabled>Lock in & continue →</button></div>
+    </div>
+  </section>
+
+  <section class="card screen" id="endingScreen">
+    <div class="endingHero">
+      <div class="badge">Your outcome</div>
+      <h1 id="endingTitle"></h1>
+      <p class="summary" id="endingSummary"></p>
+    </div>
+    <div class="section"><h2>Your path</h2><div class="path" id="path"></div></div>
+    <div class="section"><h2>Your path through a followership lens</h2><div class="lens" id="lens"></div><p class="disclaimer">These are application cues, not a diagnosis of a fixed “follower type.” Followership is contextual: the same person may respond differently depending on the leader, stakes, information, power, and relationships involved.</p></div>
+    <div class="report"><h2>KEEP THIS SCREEN OPEN</h2><strong>Be ready to report back:</strong><ol><li>Your outcome</li><li>One decision your table debated</li><li>Was your outcome successful? Why or why not?</li></ol></div>
+    <div class="restart"><button id="restartBtn">Restart activity</button></div>
+  </section>
+  <div class="footer">Designed for classroom discussion · Fictional educational scenario · No clinical decisions are being made</div>
+</main>
+<script>
+const drivers=["Patient welfare","Organizational mission","Evidence / data","Leader relationship","Team / staff impact","Personal / career consequences"];
+const decisions=[
+ {title:"The rollout is moving fast",scenario:`Grey Sloan is experiencing severe emergency-department boarding and inpatient capacity strain. Senior leadership launches <b>Flow Forward</b>, a hospital-wide initiative designed to speed discharge planning and free inpatient beds earlier in the day.<br><br>Your VP presents an aggressive rollout timeline. Several nurse managers quietly tell you the workflow is not ready and could create rushed handoffs. The VP asks you, in the leadership meeting, whether your division is ready to proceed.`,options:[
+  {label:"Support the rollout",desc:"Back the timeline and work with managers to solve issues during implementation.",tag:"Support",scores:{support:3,relationship:3,mission:2,process:1}},
+  {label:"Question it privately",desc:"Tell the VP after the meeting that you support the goal but have concerns about readiness.",tag:"Question",scores:{question:3,relationship:3,evidence:1,mission:1}},
+  {label:"Raise the concern now",desc:"Tell the group that frontline concerns should be addressed before full implementation.",tag:"Challenge",scores:{challenge:3,courage:3,mission:2,relationship:-1}},
+  {label:"Verify before taking a position",desc:"Ask for 48 hours to review readiness data and speak with unit leaders.",tag:"Wait",scores:{wait:3,evidence:3,process:2}}
+ ]},
+ {title:"The dashboard looks good. The floor sounds different.",scenario:`Two weeks later, the dashboard shows earlier discharge orders and modest improvement in bed availability. Leadership highlights the numbers as an early win.<br><br>But frontline staff report a different picture: some families feel unprepared, pharmacy and transportation problems are being discovered late, and nurses say the new targets are creating pressure to move patients before every operational barrier is resolved.`,options:[
+  {label:"Stay the course",desc:"The metrics are improving; reinforce the process and address individual problems as they arise.",tag:"Support",scores:{support:3,relationship:2,mission:2}},
+  {label:"Bring the mixed picture to the VP",desc:"Share the positive dashboard and the frontline concerns, and ask to adjust the rollout.",tag:"Question",scores:{question:3,evidence:2,relationship:2,mission:2}},
+  {label:"Push for an immediate pause",desc:"Argue that the operational warning signs are serious enough to stop expansion now.",tag:"Challenge",scores:{challenge:3,courage:3,mission:3,relationship:-1}},
+  {label:"Build a stronger evidence base",desc:"Audit delayed services, complaints, and discharge barriers before recommending a change.",tag:"Wait",scores:{wait:3,evidence:4,process:2}}
+ ]},
+ {title:"Now the pressure is personal",scenario:`The latest dashboard shows improvement in patient flow, but the story is getting more complicated. Several units are shifting work downstream, and frontline staff are reporting preventable discharge delays after patients are marked “ready.” You send the findings to your VP.<br><br>The VP responds: “We cannot lose momentum. The executive team is watching this closely. I need leaders who can help make this work—not create reasons it can't.” Your annual leadership review is next month.`,options:[
+  {label:"Commit to making it work",desc:"Tell the VP you are on board and focus on fixing implementation problems without reopening the larger decision.",tag:"Support",scores:{support:4,relationship:4,career:3,mission:1}},
+  {label:"Propose a private course correction",desc:"Offer a specific modification that preserves the initiative while addressing the evidence.",tag:"Question",scores:{question:3,evidence:2,relationship:3,process:2,mission:2}},
+  {label:"Hold your position",desc:"Tell the VP the evidence needs to be discussed with the broader leadership team despite the pressure.",tag:"Challenge",scores:{challenge:4,courage:4,mission:3,relationship:-2,career:-2}},
+  {label:"Work through the system",desc:"Document the findings, consult quality/patient-flow partners, and use established review channels.",tag:"Act",scores:{act:3,evidence:3,process:4,mission:2}}
+ ]},
+ {title:"The executive review is tomorrow",scenario:`The hospital president will review Flow Forward tomorrow. Your VP plans to present the initiative as a success and has not included the downstream problems in the deck.<br><br>You now have enough information to know the picture is incomplete. You also know that how you respond could affect patient flow, your relationship with the VP, the initiative's credibility, and your own influence going forward.`,options:[
+  {label:"Support the presentation",desc:"Do not disrupt the executive review; continue working on problems within your division afterward.",tag:"Support",scores:{support:4,relationship:4,career:3}},
+  {label:"Ask the VP to revise it tonight",desc:"Make one final private push to include the concerns and a proposed modification.",tag:"Question",scores:{question:4,relationship:3,evidence:2,mission:2}},
+  {label:"Raise the issue in the review",desc:"If the presentation remains incomplete, speak up when the executive team asks for operational input.",tag:"Challenge",scores:{challenge:4,courage:4,mission:4,relationship:-3,career:-2}},
+  {label:"Escalate through formal channels",desc:"Send the documented findings to the appropriate quality/operations leadership before the review.",tag:"Act",scores:{act:4,process:4,evidence:3,courage:2,mission:3,relationship:-2}}
+ ]}
+];
+const endings=[
+ {title:"Trust Preserved, Risk Delayed",summary:"You protected the relationship with your leader and kept the initiative moving, but important concerns remained unresolved longer than they might have.",lens:[["Relationship-centered support","You prioritized trust, access, and continued influence."],["Active engagement","You stayed involved rather than withdrawing."],["Tradeoff","Preserving alignment can also postpone necessary challenge."]]},
+ {title:"The Career-Safe Route",summary:"You remained aligned with senior leadership and reduced personal exposure. The initiative continued, while the underlying concerns depended on others or later events to force reconsideration.",lens:[["Leader support","Your choices emphasized alignment with authority."],["Power awareness","You responded to the real career consequences of dissent."],["Tradeoff","Low personal risk can increase organizational risk when concerns persist."]]},
+ {title:"The Record Gets Corrected",summary:"You used evidence and measured challenge to make the executive picture more complete without abandoning the initiative itself.",lens:[["Independent thinking","You tested the leader's narrative against evidence."],["Constructive challenge","You paired disagreement with a path forward."],["Co-created leadership","Your response changed the information leaders used to act."]]},
+ {title:"A Decision You Would Revisit",summary:"Your path was understandable in the moment, but competing pressures left you with an outcome that invites reflection about when a follower should change course.",lens:[["Context matters","Information and pressure changed across the scenario."],["Follower judgment","Effective followership is not automatic compliance or automatic dissent."],["Reflection","A defensible choice can still deserve reconsideration."]]},
+ {title:"The Bridge Is Rebuilt",summary:"You protected the working relationship while repeatedly bringing concerns forward, creating room for adjustment without turning the issue into a direct showdown.",lens:[["Relational followership","Influence depended on the leader–follower relationship."],["Constructive questioning","You challenged through dialogue rather than confrontation."],["Shared purpose","You tried to preserve both the mission and the partnership."]]},
+ {title:"Challenge + Support",summary:"You supported the goal of improving patient flow while refusing to treat support as silence. Your challenge focused on improving the initiative rather than defeating it.",lens:[["Courageous partnership","Support and challenge can coexist."],["Independent thinking","You evaluated the initiative rather than simply accepting it."],["Mission focus","Your dissent stayed connected to organizational purpose."]]},
+ {title:"Mission Over Comfort",summary:"You accepted meaningful relational or career risk because you believed the hospital's mission required the concern to be addressed.",lens:[["Courage","You acted despite personal consequences."],["Mission orientation","Organizational purpose outweighed comfort or approval."],["Power dynamics","Speaking up is different when the follower has less formal authority."]]},
+ {title:"Process Over Politics",summary:"You relied on evidence, documentation, and established organizational channels rather than personal influence alone.",lens:[["Procedural action","You used formal systems to move the concern."],["Evidence","Your challenge was grounded in documented information."],["Distributed influence","Followers can shape outcomes without positional authority."]]},
+ {title:"Influence Without Credit",summary:"You worked behind the scenes to improve the situation, prioritizing the result over visibility or ownership of the solution.",lens:[["Informal influence","Impact does not require public recognition."],["Active followership","You intervened rather than disengaging."],["Relationship awareness","You used influence in a way designed to preserve working ties."]]},
+ {title:"Private Course Correction",summary:"You repeatedly chose direct, private influence with your leader, seeking change while minimizing public conflict.",lens:[["Upward influence","You tried to change the leader's approach from within the relationship."],["Constructive dissent","Questioning was paired with solutions."],["Tradeoff","Private influence depends on the leader's willingness to respond."]]},
+ {title:"Right on the Issue, Out of the Room",summary:"You made the concern impossible to ignore, but the way the conflict unfolded reduced your access and influence with the leader afterward.",lens:[["Strong challenge","You prioritized speaking up over relational protection."],["Power consequences","Followers can be substantively right and still lose influence."],["Effectiveness question","How a challenge is delivered can shape what happens next."]]},
+ {title:"Concern Raised, Then Quiet",summary:"You voiced concern but ultimately returned to alignment when the pressure increased. The issue entered the conversation without fundamentally changing the course.",lens:[["Partial challenge","You did not remain silent."],["Leader pressure","Power and career consequences shaped later choices."],["Engagement tension","Speaking up once is different from sustaining challenge."]]},
+ {title:"The Tradeoff Route",summary:"You balanced competing obligations without fully privileging any one of them. The result was workable, but not clean—and that is often what organizational followership looks like.",lens:[["Competing loyalties","Leader, team, mission, and self all mattered."],["Situational judgment","Your behavior shifted as the context changed."],["No perfect outcome","Followership often involves choosing among imperfect options."]]},
+ {title:"Data Before Action",summary:"You resisted acting on incomplete impressions and built an evidence base before taking a stronger position.",lens:[["Independent thinking","You sought information before accepting either narrative."],["Evidence orientation","Your influence depended on credible data."],["Timing tradeoff","Careful verification can strengthen action—or delay it."]]}
+];
+let state={i:0,answers:[],selected:null,driver:null};
+const $=s=>document.querySelector(s); const intro=$("#intro"), ds=$("#decisionScreen"), es=$("#endingScreen");
+function show(el){[intro,ds,es].forEach(x=>x.classList.remove("active"));el.classList.add("active");window.scrollTo({top:0,behavior:"smooth"})}
+function setProgress(n,label){$("#progressBar").style.width=n+"%";$("#stepLabel").textContent=label}
+$("#startBtn").onclick=()=>{state.i=0;show(ds);renderDecision()};
+function renderDecision(){const d=decisions[state.i];state.selected=null;state.driver=null;setProgress((state.i+1)*20,`Decision ${state.i+1} of 4`);$("#decisionEyebrow").textContent=`Decision ${state.i+1} of 4`;$("#decisionTitle").textContent=d.title;$("#decisionScenario").innerHTML=d.scenario;$("#consequence").className="consequence";$("#consequence").innerHTML="";$("#reflection").className="reflection";$("#reason").value="";$("#charCount").textContent="0";$("#continueBtn").disabled=true;
+ const c=$("#choices");c.innerHTML="";d.options.forEach((o,idx)=>{const b=document.createElement("button");b.className="choice";b.innerHTML=`<span class="letter">${String.fromCharCode(65+idx)}</span><b>${o.label}</b><small>${o.desc}</small>`;b.onclick=()=>selectChoice(idx,b);c.appendChild(b)});
+ const dr=$("#drivers");dr.innerHTML="";drivers.forEach(x=>{const b=document.createElement("button");b.className="driver";b.textContent=x;b.onclick=()=>{state.driver=x;[...dr.children].forEach(y=>y.classList.toggle("on",y===b));$("#continueBtn").disabled=false};dr.appendChild(b)})}
+function selectChoice(idx,b){if(state.selected!==null)return;state.selected=idx;[...$("#choices").children].forEach((x,j)=>x.classList.add(j===idx?"selected":"dim"));const o=decisions[state.i].options[idx];$("#consequence").innerHTML=`<b>You chose: ${o.label}.</b> Before moving on, capture what drove that decision.`;$("#consequence").classList.add("show");$("#reflection").classList.add("show");setTimeout(()=>$("#reflection").scrollIntoView({behavior:"smooth",block:"start"}),120)}
+$("#reason").oninput=e=>$("#charCount").textContent=e.target.value.length;
+$("#continueBtn").onclick=()=>{const d=decisions[state.i],o=d.options[state.selected];state.answers.push({decision:state.i+1,label:o.label,tag:o.tag,scores:o.scores,driver:state.driver,reason:$("#reason").value.trim()});state.i++;if(state.i<4){renderDecision();window.scrollTo({top:0,behavior:"smooth"})}else renderEnding()};
+function totals(){const t={support:0,question:0,challenge:0,wait:0,act:0,relationship:0,mission:0,evidence:0,process:0,courage:0,career:0};state.answers.forEach(a=>{t[a.tag.toLowerCase()]++;Object.entries(a.scores).forEach(([k,v])=>t[k]=(t[k]||0)+v)});return t}
+function endingIndex(){const t=totals(),tags=state.answers.map(a=>a.tag),last=tags[3];
+ if(t.wait>=2 && t.evidence>=7) return 13;
+ if(t.process>=7 && t.act>=1) return 7;
+ if(t.challenge>=2 && t.relationship<=0) return 10;
+ if(t.challenge>=2 && t.support>=1) return 5;
+ if(t.challenge>=2 && t.courage>=7 && t.mission>=6) return 6;
+ if(t.question>=3) return 9;
+ if(t.question>=2 && t.evidence>=4) return 2;
+ if(t.support>=3) return 1;
+ if(t.support>=2 && t.challenge>=1 && last==="Support") return 11;
+ if(t.relationship>=8 && t.support>=2) return 0;
+ if(t.question>=2 && t.relationship>=5) return 4;
+ if(t.act>=1 && t.relationship>=4) return 8;
+ if(t.challenge>=1 && last==="Challenge") return 6;
+ const diversity=new Set(tags).size;if(diversity>=4) return 12;
+ return 3;
+}
+function renderEnding(){setProgress(100,"Outcome");const e=endings[endingIndex()];$("#endingTitle").textContent=e.title;$("#endingSummary").textContent=e.summary;const p=$("#path");p.innerHTML="";state.answers.forEach(a=>{const x=document.createElement("div");x.className="pathitem";x.innerHTML=`<span>Decision ${a.decision}</span><b>${a.label}</b>`;p.appendChild(x)});const l=$("#lens");l.innerHTML="";e.lens.forEach(([h,b])=>{const x=document.createElement("div");x.className="lensitem";x.innerHTML=`<b>${h}</b><p>${b}</p>`;l.appendChild(x)});show(es)}
+$("#restartBtn").onclick=()=>{if(confirm("Restart and clear this table's current path?")){state={i:0,answers:[],selected:null,driver:null};setProgress(0,"Start");show(intro)}};
+setProgress(0,"Start");
+</script>
+</body>
+</html>
